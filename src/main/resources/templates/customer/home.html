@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Home - Golden Dish Caterings</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .customer-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+                url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') center/cover no-repeat;
+            color: white;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            margin: 3rem 0;
+        }
+
+        .customer-action-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 20px 30px -10px rgba(0, 20, 30, 0.15), inset 0 1px 4px rgba(255, 255, 255, 0.8);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .customer-action-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 40px -12px rgba(0, 40, 60, 0.25), inset 0 1px 4px #fff;
+            color: inherit;
+        }
+
+        .customer-action-card .card-image {
+            width: 100%;
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .customer-action-card .card-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            flex: 1;
+        }
+
+        .customer-action-card h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            color: #1e2b3c;
+            margin-bottom: 0.5rem;
+        }
+
+        .customer-action-card p {
+            font-size: 1rem;
+            color: #4a5a6e;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            flex: 1;
+        }
+
+        .customer-action-card .action {
+            margin-top: auto;
+            font-weight: 500;
+            color: #7f6a9e;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .customer-action-card:hover .action {
+            border-bottom-color: #a18cd1;
+        }
+
+        .customer-action-card .action i.fa-arrow-right {
+            font-size: 1rem;
+            background: none;
+            color: #7f6a9e;
+            margin: 0;
+            filter: none;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/customer/home">Home</a></li>
+                        <li><a href="/customer/menu">Menu</a></li>
+                        <li><a href="/customer/services">Services</a></li>
+                        <li><a href="/customer/book-event">Book Event</a></li>
+                        <li><a href="/customer/chat">Chat</a></li>
+                        <li><a href="/customer/profile" class="user-email"><span class="active-dot"></span><span
+                                    th:text="${userEmail}">User</span></a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="customer-hero">
+        <div class="container">
+            <h1><b>Welcome to Golden Dish Caterings</b></h1>
+            <p>Your one-stop solution for event management and catering services</p>
+        </div>
+    </section>
+
+    <!-- Service Description -->
+    <div class="container py-5">
+        <div class="description">
+            <div class="description-left">
+                <h2 style="color: black; margin-bottom: 0;">Our Event Management System</h2>
+            </div>
+            <div class="description-right">
+                <p style="color: black; margin-bottom: 0;">
+                    The <span style="font-weight: bold; color: black;">Event Management module</span>
+                    centralizes all event planning in one place. It allows you to
+                    <span style="font-weight: bold; color: black;">manage schedules, update details,</span>
+                    and <span style="font-weight: bold; color: black;">assign resources,</span> with
+                    <span style="font-weight: bold; color: black;">sharing updates.</span> while monitoring an entire
+                    process with
+                    connecting all other professions.
+                    By streamlining coordination and resource management
+                    with timely updates and notifications,
+                    it ensures every event is well-organized and successful delivery.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div class="card-grid">
+            <a href="/customer/book-event" class="customer-action-card">
+                <div class="card-image"
+                    style="background-image: url('https://images.unsplash.com/photo-1529333166437-7750a6dd5a70');">
+                </div>
+                <div class="card-content">
+                    <h3>Book an Event</h3>
+                    <p>Create a new event booking with our services</p>
+                    <span class="action">Get started <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+            <a href="/customer/menu" class="customer-action-card">
+                <div class="card-image"
+                    style="background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836');">
+                </div>
+                <div class="card-content">
+                    <h3>View Menu</h3>
+                    <p>Browse our delicious menu options</p>
+                    <span class="action">Explore dishes <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+            <a href="/customer/services" class="customer-action-card">
+                <div class="card-image"
+                    style="background-image: url('https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=600&q=80');">
+                </div>
+                <div class="card-content">
+                    <h3>Our Services</h3>
+                    <p>Explore our catering services</p>
+                    <span class="action">Learn more <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+            <a href="/customer/bookings" class="customer-action-card">
+                <div class="card-image"
+                    style="background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80');">
+                </div>
+                <div class="card-content">
+                    <h3>My Bookings</h3>
+                    <p>View and manage your bookings</p>
+                    <span class="action">Manage <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </a>
+        </div>
+
+        <div class="section" th:if="${bookings != null and !bookings.empty}">
+            <h3><i class="fas fa-history"></i> Recent Bookings</h3>
+            <div class="row">
+                <div class="col-md-6 mb-3" th:each="booking : ${bookings}">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${booking.event != null ? booking.event.name : 'N/A'}">Event
+                                Name</h5>
+                            <p class="card-text"><i class="fas fa-calendar"></i> <span
+                                    th:text="${booking.eventDate != null ? #temporals.format(booking.eventDate, 'yyyy-MM-dd HH:mm') : 'N/A'}">Date</span>
+                            </p>
+                            <p class="card-text"><i class="fas fa-users"></i> <span
+                                    th:text="${booking.guestCount}">Guests</span></p>
+                            <p class="card-text"><i class="fas fa-dollar-sign"></i> Total: Rs. <span
+                                    th:text="${booking.totalPrice != null ? #numbers.formatDecimal(booking.totalPrice, 1, 2) : '0.00'}">0.00</span>
+                            </p>
+                            <span class="status-badge"
+                                th:classappend="${booking.status != null ? booking.status.toLowerCase() : 'pending'}"
+                                th:text="${booking.status != null ? booking.status : 'PENDING'}">Status</span>
+                            <a th:href="@{/customer/bookings/{id}(id=${booking.id})}"
+                                class="btn btn-primary btn-sm mt-2">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View All Events CTA -->
+    <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); padding: 2rem 0; text-align: center;">
+        <div class="container">
+            <h2 style="font-size: 1.6rem; font-weight: 700; color: #1e2b3c; margin-bottom: 0.3rem;">
+                <i class="fa-solid fa-calendar" style="color: #0fa368;"></i> Discover Our Events
+            </h2>
+            <p style="color: #6b7a8d; margin-bottom: 1.2rem; font-size: 1.05rem;">
+                Browse all upcoming events and register your spot today
+            </p>
+            <a href="/customer/events" style="display: inline-flex; align-items: center; gap: 0.4rem;
+                      padding: 0.55rem 1.4rem;
+                      background: #0fa368;
+                      color: white; text-decoration: none;
+                      border-radius: 999px; font-weight: 700; font-size: 0.9rem;
+                      transition: transform 0.2s ease, background 0.2s ease;"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.background='#0d8f5b'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.background='#0fa368'">
+                <i class="fas fa-arrow-right"></i> View Our All Events
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column footer-about">
+                    <h5>About Us</h5>
+                    <p>Golden Dish Caterers is a premium catering service specializing in weddings, corporate events,
+                        and private parties.</p>
+                </div>
+                <div class="footer-column">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="/customer/home"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="/customer/menu"><i class="fas fa-utensils"></i> Menu</a></li>
+                        <li><a href="/customer/services"><i class="fas fa-concierge-bell"></i> Services</a></li>
+                        <li><a href="/customer/book-event"><i class="fas fa-calendar-plus"></i> Book Event</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column footer-contact">
+                    <h5>Contact Us</h5>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Main Street, Colombo, Sri Lanka</p>
+                    <p><i class="fas fa-phone"></i> +94 11 234 5678</p>
+                    <p><i class="fas fa-envelope"></i> info@goldendish.lk</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Golden Dish Caterers | Serving Sri Lanka</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check authentication
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = '/login';
+                return;
+            }
+
+            // Ensure all action cards are clickable
+            document.querySelectorAll('.action-card').forEach(card => {
+                card.addEventListener('click', function (e) {
+                    // Allow default link behavior
+                    const href = this.getAttribute('href');
+                    if (href && href !== '#') {
+                        window.location.href = href;
+                    }
+                });
+            });
+
+            // Initialize price calculation if on booking page
+            if (typeof calculateTotal === 'function') {
+                calculateTotal();
+            }
+        });
+
+        function handleLogout() {
+            // Clear sessionStorage immediately
+            sessionStorage.clear();
+            // Redirect to logout endpoint which will invalidate server session
+            window.location.href = '/logout';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Event Registrations - Golden Dish Caterings</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .reg-page {
+            min-height: 100vh;
+            background: #f4f6fb;
+            padding-top: 100px;
+            padding-bottom: 4rem;
+        }
+
+        .page-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #1e2b3c;
+            margin-bottom: 0.3rem;
+        }
+
+        .page-sub {
+            color: #6b7a8d;
+            margin-bottom: 2.5rem;
+        }
+
+        .reg-card {
+            background: white;
+            border-radius: 1.2rem;
+            box-shadow: 0 8px 24px -8px rgba(0, 20, 40, 0.1);
+            overflow: hidden;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: stretch;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .reg-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 32px -8px rgba(0, 20, 40, 0.15);
+        }
+
+        .reg-card-accent {
+            width: 6px;
+            flex-shrink: 0;
+        }
+
+        .reg-card-accent.approved {
+            background: #0fa368;
+        }
+
+        .reg-card-body {
+            padding: 1.2rem 1.5rem;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .reg-info h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e2b3c;
+            margin: 0 0 0.25rem;
+        }
+
+        .reg-info p {
+            font-size: 0.88rem;
+            color: #6b7a8d;
+            margin: 0;
+        }
+
+        .reg-info p i {
+            width: 16px;
+            color: #0fa368;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            border-radius: 999px;
+            padding: 0.4rem 1.1rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .status-pill.pending {
+            background: rgba(245, 158, 11, 0.12);
+            color: #92400e;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .status-pill.approved {
+            background: rgba(15, 163, 104, 0.1);
+            color: #0fa368;
+            border: 1px solid rgba(15, 163, 104, 0.35);
+        }
+
+        .status-pill.cancelled {
+            background: rgba(225, 29, 72, 0.08);
+            color: #be123c;
+            border: 1px solid rgba(225, 29, 72, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: #8899aa;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.35;
+        }
+
+        .browse-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.4rem;
+            background: #0fa368;
+            color: white;
+            text-decoration: none;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-top: 1.2rem;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .browse-btn:hover {
+            transform: translateY(-2px);
+            background: #0d8f5b;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/customer/home">Home</a></li>
+                        <li><a href="/customer/menu">Menu</a></li>
+                        <li><a href="/customer/services">Services</a></li>
+                        <li><a href="/customer/book-event">Book Event</a></li>
+                        <li><a href="/customer/chat">Chat</a></li>
+                        <li><a href="/customer/profile" class="user-email">
+                                <span class="active-dot"></span>
+                                <span th:text="${userEmail}">User</span>
+                            </a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="reg-page">
+        <div class="container" style="max-width:800px;">
+            <h2 class="page-title"> My Event Registrations</h2>
+            <p class="page-sub">Track the approval status of your event registrations here.</p>
+
+            <!-- Registrations list -->
+            <div th:if="${registrations != null and !registrations.empty}">
+                <div class="reg-card" th:each="reg : ${registrations}">
+                    <div class="reg-card-accent"
+                        th:classappend="${reg.status != null ? reg.status.toLowerCase() : 'pending'}"></div>
+                    <div class="reg-card-body">
+                        <div class="reg-info">
+                            <h4 th:text="${reg.event != null ? reg.event.name : 'Event'}">Event Name</h4>
+                            <p><i class="fas fa-user"></i> <span th:text="${reg.name}">Name</span></p>
+                            <p><i class="fas fa-phone"></i> <span th:text="${reg.contactNumber}">Contact</span></p>
+                            <p th:if="${reg.event != null and reg.event.venue != null}">
+                                <i class="fas fa-map-marker-alt"></i> <span th:text="${reg.event.venue}">Venue</span>
+                            </p>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.8rem;">
+                            <span class="status-pill approved" th:if="${reg.status == 'APPROVED'}">
+                                <i class="fas fa-circle-check"></i> Approved
+                            </span>
+                            <span class="status-pill cancelled" th:if="${reg.status == 'CANCELLED'}">
+                                <i class="fas fa-ban"></i> Cancelled
+                            </span>
+                            <span class="status-pill pending"
+                                th:if="${reg.status != 'APPROVED' and reg.status != 'CANCELLED'}">
+                                <i class="fas fa-hourglass-half"></i> Pending
+                            </span>
+
+                            <!-- Cancel Button – only show for PENDING registrations -->
+                            <form th:if="${reg.status != 'APPROVED' and reg.status != 'CANCELLED'}"
+                                th:action="@{/customer/event-registrations/cancel/{id}(id=${reg.id})}" method="post">
+                                <button type="submit"
+                                    onclick="return confirm('Are you sure you want to cancel this registration?');"
+                                    style="display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.4rem 1rem; background: transparent; color: #e11d48; border: 1px solid #fda4af; border-radius: 999px; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;"
+                                    onmouseover="this.style.background='#fff1f2'; this.style.borderColor='#fb7185'"
+                                    onmouseout="this.style.background='transparent'; this.style.borderColor='#fda4af'">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="empty-state" th:if="${registrations == null or registrations.empty}">
+                <i class="fas fa-calendar-xmark d-block"></i>
+                <h4>No Registrations Yet</h4>
+                <p>You haven't registered for any events. Browse our events to get started!</p>
+                <a href="/customer/events" class="browse-btn">
+                    <i class="fas fa-calendar-alt"></i> Browse Events
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column footer-about">
+                    <h5>About Us</h5>
+                    <p>Golden Dish Caterers is a premium catering service specializing in weddings, corporate events,
+                        and private parties.</p>
+                </div>
+                <div class="footer-column">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="/customer/home"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="/customer/events"><i class="fas fa-calendar-alt"></i> Our Events</a></li>
+                        <li><a href="/customer/event-registrations"><i class="fas fa-clipboard-list"></i> My
+                                Registrations</a></li>
+                        <li><a href="/customer/book-event"><i class="fas fa-calendar-plus"></i> Book Event</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column footer-contact">
+                    <h5>Contact Us</h5>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Main Street, Colombo, Sri Lanka</p>
+                    <p><i class="fas fa-phone"></i> +94 11 234 5678</p>
+                    <p><i class="fas fa-envelope"></i> info@goldendish.lk</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Golden Dish Caterers | Serving Sri Lanka</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') window.location.href = '/login';
+            document.querySelectorAll('.logout-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    sessionStorage.clear();
+                    window.location.href = '/logout';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

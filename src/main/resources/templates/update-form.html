@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Form - Event Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control,
+        .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 0.25rem rgba(5, 150, 105, 0.25);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard">Home</a></li>
+                        <li><a href="/admin/bookings">Bookings</a></li>
+                        <li><a href="/admin/menus">Meals</a></li>
+                        <li><a href="/admin/services">Services</a></li>
+                        <li><a href="/admin/chat">Chat</a></li>
+                        <li><a href="#" class="user-email"><span class="active-dot"></span><span
+                                    th:text="${userEmail}">User</span></a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-5" style="margin-top: 80px;">
+        <h1 class="text-center mb-4"
+            th:text="${update.id != null ? 'Update the Notification 📝' : 'Create New Update 📦'}">Update/Notification
+            Form</h1>
+        <p class="text-center text-muted mb-5"
+            th:text="${update.id != null ? 'Update the notification details below' : 'Add a new update or notification to the timeline'}">
+        </p>
+
+        <div class="form-section">
+            <form th:action="@{/updates/save}" th:object="${update}" method="post">
+                <input type="hidden" th:field="*{id}" />
+                <input type="hidden" th:field="*{date}" />
+
+                <div class="mb-4">
+                    <label for="description" class="form-label">Description *</label>
+                    <textarea id="description" th:field="*{description}" class="form-control"
+                        placeholder="Enter update or notification description" rows="4" required></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="event" class="form-label">Link to Event</label>
+                    <select id="event" th:field="*{event.id}" class="form-select">
+                        <option value="" disabled selected>Select an event</option>
+                        <option th:each="event : ${events}" th:value="${event.id}" th:text="${event.name}"></option>
+                    </select>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-sm rounded-pill px-4">
+                        <i class="fas fa-save me-2"></i> <span
+                            th:text="${update.id != null ? 'Save Update' : 'Save Update'}">Save Update</span>
+                    </button>
+                    <a href="/updates" class="btn btn-secondary btn-sm rounded-pill px-4 ms-3">
+                        <i class="fas fa-arrow-left me-2"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

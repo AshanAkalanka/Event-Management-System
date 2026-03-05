@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Form - Event Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control,
+        .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 0.25rem rgba(5, 150, 105, 0.25);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard">Home</a></li>
+                        <li><a href="/admin/bookings">Bookings</a></li>
+                        <li><a href="/admin/menus">Meals</a></li>
+                        <li><a href="/admin/services">Services</a></li>
+                        <li><a href="/admin/chat">Chat</a></li>
+                        <li><a href="#" class="user-email"><span class="active-dot"></span><span
+                                    th:text="${userEmail}">User</span></a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-5" style="margin-top: 80px;">
+        <h1 class="text-center mb-4" th:text="${resource.id != null ? 'Update Resource 📝' : 'Create New Resource 📦'}">
+            Resource Form</h1>
+        <p class="text-center text-muted mb-5"
+            th:text="${resource.id != null ? 'Update the resource details below' : 'Add a new resource to your inventory'}">
+        </p>
+
+        <div class="form-section">
+            <form th:action="@{/resources/save}" th:object="${resource}" method="post">
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="name" class="form-label">Resource Name *</label>
+                        <input type="text" id="name" th:field="*{name}" class="form-control"
+                            placeholder="Enter resource name" required>
+                        <div th:if="${nameError}" th:text="${nameError}" class="text-danger small mt-1"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="type" class="form-label">Resource Type *</label>
+                        <select id="type" th:field="*{type}" class="form-select" required>
+                            <option value="">Select resource type</option>
+                            <optgroup label="Staff Resources">
+                                <option value="Chefs">Chefs</option>
+                                <option value="Waiters">Waiters</option>
+                                <option value="Drivers">Drivers</option>
+                                <option value="Event setup crew">Event setup crew</option>
+                            </optgroup>
+                            <optgroup label="Physical Resources">
+                                <option value="Halls / venues">Halls / venues</option>
+                                <option value="Tables, chairs">Tables, chairs</option>
+                                <option value="Decoration items">Decoration items</option>
+                                <option value="Audio/visual equipment">Audio/visual equipment</option>
+                                <option value="Vehicles for transport">Vehicles for transport</option>
+                            </optgroup>
+                            <optgroup label="Consumables">
+                                <option value="Food packages">Food packages</option>
+                                <option value="Drinks">Drinks</option>
+                                <option value="Ingredients">Ingredients</option>
+                                <option value="Flowers">Flowers</option>
+                            </optgroup>
+                        </select>
+                        <div th:if="${typeError}" th:text="${typeError}" class="text-danger small mt-1"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="quantity" class="form-label">Quantity *</label>
+                        <input type="number" id="quantity" th:field="*{quantity}" class="form-control"
+                            placeholder="Enter quantity" min="1" required>
+                        <div th:if="${quantityError}" th:text="${quantityError}" class="text-danger small mt-1"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="eventId" class="form-label">Assign to Event *</label>
+                        <select id="eventId" name="eventId" class="form-select" required>
+                            <option value="">Select an event</option>
+                            <option th:each="event : ${events}" th:value="${event.id}" th:text="${event.name}"
+                                th:selected="${resource.event != null and resource.event.id == event.id}"></option>
+                        </select>
+                        <div th:if="${eventError}" th:text="${eventError}" class="text-danger small mt-1"></div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="note" class="form-label">Special Notes</label>
+                    <textarea id="note" th:field="*{note}" class="form-control"
+                        placeholder="Add special notes for this resource" rows="3"></textarea>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary rounded-pill px-5">
+                        <i class="fas fa-save me-2"></i> <span
+                            th:text="${resource.id != null ? 'Update Resource' : 'Create Resource'}">Save
+                            Resource</span>
+                    </button>
+                    <a href="/resources" class="btn btn-secondary rounded-pill px-5 ms-3">
+                        <i class="fas fa-arrow-left me-2"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

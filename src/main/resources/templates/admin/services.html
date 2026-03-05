@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/admin/bookings">Bookings</a></li>
+                        <li><a href="/admin/menus">Meals</a></li>
+                        <li><a href="/admin/services">Services</a></li>
+                        <li><a href="#" class="user-email"><span class="active-dot"></span><span
+                                    th:text="${userEmail}">Admin</span></a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-5" style="margin-top: 80px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Services</h1>
+            <a href="/admin/services/new" class="action-btn btn-primary rounded-pill"><i class="fas fa-plus"></i> Add
+                Service</a>
+        </div>
+
+        <div class="modern-grid" th:if="${services != null and !services.empty}">
+            <div class="modern-card hover-lift" th:each="s : ${services}">
+                <img class="card-img-top" style="height: 180px; object-fit: cover;"
+                    th:src="${s.imageUrl != null and !s.imageUrl.isEmpty() ? s.imageUrl : '/images/homepage_image.jpg'}"
+                    alt="Service">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold" th:text="${s.name}">Name</h5>
+                    <p class="card-text text-muted" th:text="${s.description != null ? s.description : ''}"></p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong style="font-size: 1.1rem; color: var(--secondary);">Rs. <span
+                                th:text="${s.price != null ? #numbers.formatDecimal(s.price, 1, 2) : '0.00'}">0.00</span></strong>
+                        <small class="text-muted" th:text="${s.unit}">unit</small>
+                    </div>
+                    <div class="mt-3">
+                        <span class="modern-badge"
+                            th:classappend="${s.isAvailable != null and s.isAvailable ? 'bg-success' : 'bg-secondary'}"
+                            th:text="${s.isAvailable != null and s.isAvailable ? 'Available' : 'Hidden'}">Available</span>
+                    </div>
+                </div>
+                <div class="card-footer d-flex gap-2 bg-transparent border-0 pt-0 pb-3">
+                    <a class="action-btn btn-outline rounded-pill flex-fill justify-content-center"
+                        style="font-size: 0.9rem;" th:href="@{/admin/services/{id}/edit(id=${s.id})}"><i
+                            class="fas fa-edit"></i> Edit</a>
+                    <form th:action="@{/admin/services/{id}/delete(id=${s.id})}" method="post"
+                        onsubmit="return confirm('Delete this service?');" class="flex-fill d-flex m-0">
+                        <button class="action-btn rounded-pill flex-fill justify-content-center"
+                            style="background-color: #ef4444; color: white; font-size: 0.9rem; border:none;"
+                            type="submit"><i class="fas fa-trash"></i> Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${services == null or services.empty}" class="text-center py-5">
+            <i class="fas fa-concierge-bell fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No services found.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = '/login';
+            }
+        });
+
+        document.querySelectorAll('.logout-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                sessionStorage.clear();
+                window.location.href = '/logout';
+            });
+        });
+    </script>
+</body>
+
+</html>

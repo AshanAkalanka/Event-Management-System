@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Golden Dish Caterings</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/customer/home">Home</a></li>
+                        <li><a href="/customer/menu">Menu</a></li>
+                        <li><a href="/customer/services">Services</a></li>
+                        <li><a href="/customer/book-event">Book Event</a></li>
+                        <li><a href="/customer/chat">Chat</a></li>
+                        <li><a href="/customer/profile" class="user-email"><span class="active-dot"></span><span
+                                    th:text="${userEmail}">User</span></a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-5" style="margin-top: 80px;">
+        <h1 class="text-center mb-4">My Bookings</h1>
+
+        <div class="modern-grid" th:if="${bookings != null and !bookings.empty}">
+            <div class="modern-card hover-lift" th:each="booking : ${bookings}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title fw-bold mb-0"
+                            th:text="${booking.event != null ? booking.event.name : 'N/A'}">Event</h5>
+                        <span class="modern-badge"
+                            th:classappend="${booking.status != null ? booking.status.toLowerCase() : 'bg-warning'}"
+                            th:text="${booking.status != null ? booking.status : 'PENDING'}">Status</span>
+                    </div>
+
+                    <div class="text-muted mb-3" style="font-size: 0.95rem;">
+                        <div class="mb-1"><i class="fas fa-calendar text-secondary me-2"></i> <span
+                                th:text="${booking.eventDate != null ? #temporals.format(booking.eventDate, 'yyyy-MM-dd HH:mm') : 'N/A'}">Date</span>
+                        </div>
+                        <div class="mb-1"><i class="fas fa-map-marker-alt text-secondary me-2"></i> <span
+                                th:text="${booking.venue != null ? booking.venue : 'N/A'}">Venue</span></div>
+                        <div class="mb-1"><i class="fas fa-door-open text-secondary me-2"></i> <span
+                                th:text="${booking.venueType != null ? booking.venueType : 'N/A'}">Venue Type</span>
+                        </div>
+                        <div class="mb-1"><i class="fas fa-tag text-secondary me-2"></i> <span
+                                th:text="${booking.bookingType != null ? booking.bookingType : 'N/A'}">Type</span></div>
+                        <div class="mb-1"><i class="fas fa-users text-secondary me-2"></i> <span
+                                th:text="${booking.guestCount}">Guests</span></div>
+                        <div class="mb-1 mt-2 p-2 bg-light rounded"><i class="fas fa-dollar-sign text-success me-1"></i>
+                            <strong style="color: var(--secondary); font-size: 1.1rem;">Total: Rs. <span
+                                    th:text="${booking.totalPrice != null ? #numbers.formatDecimal(booking.totalPrice, 1, 2) : '0.00'}">0.00</span></strong>
+                        </div>
+                    </div>
+
+                    <div class="mt-2 p-2 bg-light border rounded"
+                        th:if="${booking.adminNote != null and !booking.adminNote.isEmpty()}">
+                        <small class="text-muted"><strong class="text-dark">Admin Note:</strong> <span
+                                th:text="${booking.adminNote}">Note</span></small>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <a th:href="@{/customer/bookings/{id}(id=${booking.id})}"
+                            class="action-btn btn-outline flex-fill justify-content-center text-decoration-none">View
+                            Details</a>
+                        <button th:if="${booking.status == 'PENDING'}"
+                            th:onclick="'cancelBooking(' + ${booking.id} + ')'"
+                            class="action-btn flex-fill justify-content-center"
+                            style="background-color: #dc3545; color: white;">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${bookings == null or bookings.empty}" class="text-center">
+            <p class="text-muted">No bookings found. <a href="/customer/book-event">Book an event now!</a></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = '/login';
+            }
+        });
+
+        // Handle logout
+        document.querySelectorAll('.logout-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                sessionStorage.clear();
+                window.location.href = '/logout';
+            });
+        });
+
+        async function cancelBooking(id) {
+            if (!confirm('Are you sure you want to cancel this booking?')) return;
+
+            const response = await fetch('/customer/bookings/' + id + '/cancel', {
+                method: 'POST'
+            });
+            const data = await response.json();
+            alert(data.message);
+            if (data.success) location.reload();
+        }
+    </script>
+</body>
+
+</html>

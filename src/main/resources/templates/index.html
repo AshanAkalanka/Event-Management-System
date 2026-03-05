@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management - Catering System</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* General layout additions for dashboard */
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .customer-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+                url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') center/cover no-repeat;
+            color: white;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        /* Service Description */
+        .description {
+            padding: 40px 0;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .description-left {
+            flex: 1;
+            text-align: left;
+        }
+
+        .description-right {
+            flex: 1;
+            text-align: left;
+            position: relative;
+        }
+
+        .description-right::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background-color: var(--secondary);
+        }
+
+        .description h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            font-family: Montserrat;
+        }
+
+        .description p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--gray);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            margin: 3rem auto;
+        }
+
+        .customer-action-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 20px 30px -10px rgba(0, 20, 30, 0.15), inset 0 1px 4px rgba(255, 255, 255, 0.8);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .customer-action-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 40px -12px rgba(0, 40, 60, 0.25), inset 0 1px 4px #fff;
+            color: inherit;
+        }
+
+        .customer-action-card .card-image {
+            width: 100%;
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .customer-action-card .card-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            flex: 1;
+        }
+
+        .customer-action-card h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+            color: #1e2b3c;
+            margin-bottom: 0.5rem;
+        }
+
+        .customer-action-card p {
+            font-size: 1rem;
+            color: #4a5a6e;
+            line-height: 1.5;
+            margin-bottom: 1.8rem;
+            flex: 1;
+        }
+
+        .customer-action-card .action {
+            margin-top: auto;
+            font-weight: 500;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .customer-action-card:hover .action {
+            border-bottom-color: #059669;
+        }
+
+        .customer-action-card .action i.fa-arrow-right {
+            font-size: 1rem;
+            background: none;
+            color: #10b981;
+            margin: 0;
+            filter: none;
+        }
+
+
+        /* Events Section */
+        .events-section {
+            background-color: white;
+        }
+
+        .events-heading {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .events-heading h2 {
+            font-size: 2.2rem;
+            color: var(--secondary);
+            display: inline-block;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #28a745;
+        }
+
+        .event-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            margin-bottom: 30px;
+            height: 100%;
+        }
+
+        .event-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-img-container {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-background-image {
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80') no-repeat center center/cover;
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .status-badge.planned {
+            background-color: #17a2b8;
+        }
+
+        .status-badge.new {
+            background-color: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .status-badge.in-progress {
+            background-color: var(--accent);
+            color: var(--dark);
+        }
+
+        .status-badge.completed {
+            background-color: var(--secondary);
+        }
+
+        .status-badge.cancelled {
+            background-color: var(--primary);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-text {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-text i {
+            width: 20px;
+            margin-right: 10px;
+            color: green;
+        }
+
+        .card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .card-actions a {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+
+        .btn-warning {
+            background-color: var(--accent);
+            border-color: var(--accent);
+            color: var(--dark);
+        }
+
+        .btn-danger {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Event Card Buttons - Color Coded */
+        .event-card-btn {
+            border-radius: 30px !important;
+            color: white !important;
+            padding: 8px 20px !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+            min-width: 110px !important;
+            text-align: center !important;
+            border: 2px solid transparent !important;
+        }
+
+        /* View Details Button - Blue */
+        .btn-info.event-card-btn {
+            background: #3d8bff !important;
+            border-color: #3d8bff !important;
+        }
+
+        .btn-info.event-card-btn:hover {
+            background: darkblue !important;
+            border-color: darkblue !important;
+        }
+
+        /* Update Button - Yellow */
+        .btn-warning.event-card-btn {
+            background: linear-gradient(135deg, #ffc107, #e0a800) !important;
+            border-color: #ffc107 !important;
+            color: #212529 !important;
+        }
+
+        .btn-warning.event-card-btn:hover {
+            background: linear-gradient(135deg, #e0a800, #d39e00) !important;
+            border-color: #e0a800 !important;
+            color: #212529 !important;
+        }
+
+        /* Delete Button - Red */
+        .btn-danger.event-card-btn {
+            background: linear-gradient(135deg, #dc3545, #c82333) !important;
+            border-color: #dc3545 !important;
+        }
+
+        .btn-danger.event-card-btn:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130) !important;
+            border-color: #c82333 !important;
+        }
+
+        .event-card-btn:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .event-card-btn:active {
+            transform: translateY(0) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        /* Black Styling */
+
+        /* Empty State */
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .minimal-icon {
+            font-size: 4rem;
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .minimal-title {
+            font-size: 2rem;
+            color: black;
+            margin-bottom: 15px;
+        }
+
+        .decoration-line {
+            width: 100px;
+            height: 3px;
+            background-color: lightblue;
+            margin: 0 auto 20px;
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgba(15, 23, 42, 0.9);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            gap: 30px;
+        }
+
+        .footer-column {
+            flex: 1;
+            min-width: 280px;
+            margin-bottom: 30px;
+            padding: 0 15px;
+        }
+
+        .footer-about {
+            flex: 3;
+            max-width: 500px;
+            margin-right: auto;
+        }
+
+        .footer-links-contact {
+            display: flex;
+            flex: 1;
+            gap: 40px;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-left: auto;
+            padding-left: 50px;
+        }
+
+        .footer-links-contact .footer-column {
+            flex: 0 0 auto;
+            min-width: 180px;
+        }
+
+        .footer-links-contact .footer-column:first-child {
+            text-align: center;
+        }
+
+        .footer-links-contact .footer-column:first-child ul {
+            display: inline-block;
+            text-align: left;
+        }
+
+        .footer-column h5 {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 12px;
+            padding-left: 0;
+        }
+
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .footer-column ul li a i {
+            margin-right: 10px;
+            width: 18px;
+            text-align: center;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+
+        .footer-about p {
+            color: #ddd;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            text-align: justify;
+        }
+
+        .footer-contact p {
+            color: #ddd;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .footer-contact i {
+            width: 18px;
+            margin-right: 10px;
+            color: var(--accent);
+            text-align: center;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links-contact {
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .footer-column {
+                min-width: 100%;
+                margin-bottom: 40px;
+            }
+
+            .footer-about {
+                max-width: 100%;
+                margin-right: 0;
+            }
+
+            .footer-about p {
+                text-align: center;
+            }
+
+            .footer-contact p {
+                justify-content: center;
+            }
+
+            .hero-section h1 {
+                font-size: 2.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .description {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .description-left,
+            .description-right {
+                text-align: center;
+            }
+
+            .description-right::before {
+                display: none;
+            }
+
+            nav ul {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            nav ul.show {
+                display: flex;
+            }
+
+            nav ul li {
+                margin: 10px 0;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .hero-section h1 {
+                font-size: 2.2rem;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+
+            .card-actions {
+                flex-direction: column;
+            }
+
+            .card-actions a {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .btn {
+                padding: 10px 20px;
+            }
+
+            .section {
+                padding: 60px 0;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo {
+                margin-bottom: 15px;
+            }
+
+            nav ul {
+                position: static;
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            nav ul li {
+                margin: 5px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Golden Dish Caterers Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <div class="mobile-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="/admin/bookings">Bookings</a></li>
+                        <li><a href="/admin/menus">Meals</a></li>
+                        <li><a href="/admin/services">Services</a></li>
+                        <li><a href="/admin/event-registrations">Registrations</a></li>
+                        <li><a href="/admin/chat">Chat</a></li>
+                        <li><a href="#" class="user-email"><span class="active-dot"></span><span
+                                    th:text="${userEmail}">User</span></a></li>
+                        <li><a href="/logout" class="logout-btn" onclick="handleLogout()">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="customer-hero">
+        <div class="container">
+            <h1><b>Golden Dish Caterings Event Management</b></h1>
+            <p>Professional Catering & Event Management Platform</p>
+        </div>
+    </section>
+
+    <!-- Service Description -->
+    <div class="container py-5">
+        <div class="description">
+            <div class="description-left">
+                <h2 style="color: black; margin-bottom: 0;">Our Event Management System</h2>
+            </div>
+            <div class="description-right">
+                <p style="color: black; margin-bottom: 0;">
+                    The <span style="font-weight: bold; color: black;">Event Management service</span>
+                    makes it easy for you to plan and enjoy your events without stress.
+                    You can <span style="font-weight: bold; color: black;">view event schedules, check important
+                        details,</span>
+                    and stay informed with <span style="font-weight: bold; color: black;">real-time updates.</span>
+                    Our team handles all coordination behind the scenes,
+                    ensuring smooth communication, proper resource handling,
+                    and a <span style="font-weight: bold; color: black;">well-organized, successful event
+                        experience</span>
+                    from start to finish.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features / Quick Actions Section -->
+    <section id="features" class="features-section py-5 bg-transparent"
+        style="background-color: transparent !important;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-5">
+                    <div class="section-title">
+                        <h2 style="color: black;">Admin Quick Actions</h2>
+                    </div>
+                    <p class="section-subtitle">Everything you need to manage events efficiently</p>
+                </div>
+            </div>
+
+            <div class="card-grid pt-0 mt-0">
+                <a href="/events/form" class="customer-action-card">
+                    <div class="card-image"
+                        style="background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=600&q=80');">
+                    </div>
+                    <div class="card-content">
+                        <h3>Create Event</h3>
+                        <p>Create and customize events with detailed information, categories, and settings.</p>
+                        <span class="action">Create <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <a href="/resources" class="customer-action-card">
+                    <div class="card-image"
+                        style="background-image: url('https://images.unsplash.com/photo-1540553016722-983e48a2cd10?auto=format&fit=crop&w=600&q=80');">
+                    </div>
+                    <div class="card-content">
+                        <h3>Assign Resources</h3>
+                        <p>Assign and manage all resources to events easily.</p>
+                        <span class="action">Manage <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <a href="/updates" class="customer-action-card">
+                    <div class="card-image"
+                        style="background-image: url('https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=600&q=80');">
+                    </div>
+                    <div class="card-content">
+                        <h3>Event Updates</h3>
+                        <p>Deliver updates instantly to all coordinators and stakeholders.</p>
+                        <span class="action">Update <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section class="events-section">
+        <div class="container">
+
+            <!-- Current Events Heading -->
+            <div class="events-heading" th:if="${events != null and !events.empty}">
+                <h2 style="color: black;">All Events</h2>
+            </div>
+
+            <!-- Events Grid -->
+            <div class="row" th:if="${events != null and !events.empty}">
+                <div class="col-12 mb-4" th:each="event : ${events}">
+                    <div class="card event-card h-100">
+                        <div class="row g-0 h-100">
+                            <!-- Image Column -->
+                            <div class="col-md-4 card-img-container"
+                                style="min-height: 220px; border-right: 3px solid var(--primary); position: relative; overflow: hidden; height: 100%;">
+                                <!-- Uploaded photo -->
+                                <img th:if="${event.imageUrl != null}" th:src="${event.imageUrl}" alt="Event photo"
+                                    style="width:100%; height:100%; object-fit:cover; display:block; position: absolute; top: 0; left: 0;">
+                                <!-- Default fallback -->
+                                <div th:if="${event.imageUrl == null}" class="card-background-image"
+                                    style="background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
+                                           url('https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80')
+                                           no-repeat center center/cover; height:100%; width: 100%; position: absolute; top: 0; left: 0;">
+                                </div>
+                                <div class="card-overlay" style="z-index: 2;">
+                                    <span class="status-badge"
+                                        style="padding: 6px 16px; font-size: 0.75rem; letter-spacing: 0.5px; text-transform: uppercase;"
+                                        th:classappend="${event.status != null ? event.status.toLowerCase().replace(' ', '-') : 'planned'}"
+                                        th:text="${event.status != null ? event.status : 'Planned'}"></span>
+                                </div>
+                            </div>
+
+                            <!-- Content Column -->
+                            <div class="col-md-8">
+                                <div class="card-body"
+                                    style="padding: 1.5rem; height: 100%; display: flex; flex-direction: column;">
+                                    <!-- Event Details -->
+                                    <div class="row mb-3 flex-grow-1">
+                                        <div class="col-md-6 mb-2">
+                                            <div class="card-text mb-2" style="font-size: 0.95rem;">
+                                                <i class="fas fa-tag" style="width: 25px; color: var(--secondary);"></i>
+                                                <strong class="text-dark me-2">Event:</strong> <span class="text-muted"
+                                                    th:text="${event.name}"></span>
+                                            </div>
+                                            <div class="card-text mb-2" style="font-size: 0.95rem;">
+                                                <i class="fas fa-map-marker-alt"
+                                                    style="width: 25px; color: var(--secondary);"></i>
+                                                <strong class="text-dark me-2">Venue:</strong> <span class="text-muted"
+                                                    th:text="${event.venue}"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <div class="card-text mb-2" style="font-size: 0.95rem;">
+                                                <i class="fas fa-users"
+                                                    style="width: 25px; color: var(--secondary);"></i>
+                                                <strong class="text-dark me-2">Guests:</strong> <span class="text-muted"
+                                                    th:text="${event.guestCount}"></span>
+                                            </div>
+                                            <div class="card-text mb-2" style="font-size: 0.95rem;">
+                                                <i class="fas fa-clock"
+                                                    style="width: 25px; color: var(--secondary);"></i>
+                                                <strong class="text-dark me-2">Date & Time:</strong> <span
+                                                    class="text-muted" th:text="${event.dateTime}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons Grid -->
+                                    <div class="row g-2 mt-auto pt-3" style="border-top: 1px solid #eee;">
+                                        <div class="col-md-3 col-6">
+                                            <a th:href="@{/events/{id}(id=${event.id})}"
+                                                class="btn event-card-btn w-100"
+                                                style="background: #3b82f6; border-color: #3b82f6; color: white;">
+                                                <i class="fas fa-eye me-1"></i> Details
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3 col-6">
+                                            <a th:href="@{/events/form(id=${event.id})}"
+                                                class="btn event-card-btn w-100"
+                                                style="background: #f59e0b; border-color: #f59e0b; color: white;">
+                                                <i class="fas fa-edit me-1"></i> Update
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3 col-6">
+                                            <a th:href="@{/events/{id}/pdf(id=${event.id})}"
+                                                class="btn event-card-btn w-100"
+                                                style="background: #10b981; border-color: #10b981; color: white;"
+                                                target="_blank">
+                                                <i class="fas fa-file-pdf me-1"></i> PDF
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3 col-6">
+                                            <a th:href="@{/events/delete/{id}(id=${event.id})}"
+                                                class="btn event-card-btn delete-btn w-100"
+                                                style="background: #ef4444; border-color: #ef4444; color: white;">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${events == null or events.empty}" class="text-center">
+                <div class="empty-state">
+                    <div class="minimal-icon">
+                        <i class="fa fa-spinner"></i>
+                    </div>
+                    <h1 class="minimal-title">No Events Yet</h1>
+                    <div class="decoration-line"></div>
+                    <p class="text-muted mb-4">Get started by creating your event</p>
+                    <a href="/events/form" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus"></i> Create new event here 🎉🎆
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Google Calendar Section -->
+    <section class="py-5" style="background: #f8f9fa;">
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 style="color: var(--secondary); font-weight: 700;">
+                    <i class="fas fa-calendar-alt me-2"></i> Admin Calendar
+                </h2>
+                <p class="text-muted">Plan and track events using Google Calendar</p>
+            </div>
+            <div style="
+                background: white;
+                border-radius: 16px;
+                box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+                overflow: hidden;
+                border: 1px solid rgba(5,150,105,0.12);
+            ">
+                <!-- Calendar toolbar -->
+                <div style="
+                    background: linear-gradient(90deg, var(--secondary, #059669), #10b981);
+                    padding: 14px 24px;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                ">
+                    <i class="fas fa-calendar-check" style="color:#fff; font-size:1.2rem;"></i>
+                    <span style="color:#fff; font-weight:600; font-size:1rem; letter-spacing:0.3px;">
+                        Google Calendar
+                    </span>
+                    <a href="https://calendar.google.com" target="_blank"
+                        style="margin-left:auto; color:#fff; font-size:0.85rem; text-decoration:none; opacity:0.9;">
+                        <i class="fas fa-external-link-alt me-1"></i> Open in Google Calendar
+                    </a>
+                </div>
+                <!-- Calendar iframe -->
+                <iframe
+                    src="https://calendar.google.com/calendar/embed?showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=1&showCalendars=1&showTz=1&mode=MONTH&height=450&wkst=2&bgcolor=%23ffffff&ctz=Asia%2FColombo"
+                    style="border: none; width: 100%; height: 450px; display: block;" frameborder="0" scrolling="no"
+                    title="Admin Google Calendar">
+                </iframe>
+            </div>
+            <p class="text-center text-muted mt-3" style="font-size:0.85rem;">
+                <i class="fas fa-info-circle me-1"></i>
+                Sign in to Google in this embed to see your personal calendar events.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: var(--secondary); color: #fff; text-align: center; padding: 4px 0;">
+        <p style="margin: 0; font-size: 12px; font-weight: 300;">
+            &copy; 2025 Golden Dish Caterers | Serving Sri Lanka
+        </p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-toggle').addEventListener('click', function () {
+            document.querySelector('nav ul').classList.toggle('show');
+        });
+
+        // Handle logout
+        function handleLogout() {
+            // Clear session storage immediately
+            sessionStorage.clear();
+            // Redirect to logout endpoint
+            window.location.href = '/logout';
+        }
+
+        // Check authentication status on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check if a user is logged in via session storage
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            const loginTime = sessionStorage.getItem('loginTime');
+
+            if (isLoggedIn !== 'true') {
+                // User not logged in, redirect to the landing page
+                window.location.href = '/';
+                return;
+            }
+
+            // Check if the session is still valid (24 hours)
+            if (loginTime) {
+                const loginDate = new Date(loginTime);
+                const now = new Date();
+                const hoursDiff = (now - loginDate) / (1000 * 60 * 60);
+
+                if (hoursDiff >= 24) {
+                    // Session expired, clear storage and redirect
+                    sessionStorage.clear();
+                    window.location.href = '/';
+                    return;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

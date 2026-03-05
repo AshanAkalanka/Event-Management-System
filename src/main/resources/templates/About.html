@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn More - Golden Dish Caterings</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:"Caveat", cursive;
+            min-height:100vh;
+            color:white;
+            overflow-x:hidden;
+        }
+
+        /* Background */
+        .bg{
+            position:fixed;
+            inset:0;
+            background-image:url("https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=2000&q=80");
+            background-size:cover;
+            background-position:center;
+            z-index:0;
+        }
+
+        .overlay{
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,0.75);
+            z-index:1;
+        }
+
+        .page{
+            position:relative;
+            z-index:2;
+            max-width:1000px;
+            margin:auto;
+            padding:5rem 2rem 3rem;
+            text-align:center;
+        }
+
+        /* Big About Title */
+        h1{
+            font-size:7rem;
+            color:#22c55e;
+            font-weight:700;
+            margin-bottom:1.5rem;
+            position:relative;
+            display:inline-block;
+        }
+
+        /* Green underline */
+        h1::after{
+            content:"";
+            position:absolute;
+            left:0;
+            bottom:-8px;
+            width:100%;
+            height:4px;
+            background:#22c55e;
+            border-radius:10px;
+        }
+
+        /* Section Titles */
+        h2,h3{
+            color:#22c55e;
+            font-weight:700;
+            margin-top:2rem;
+            margin-bottom:0.5rem;
+        }
+
+        h2{
+            font-size:2.3rem;
+        }
+
+        h3{
+            font-size:1.7rem;
+        }
+
+        p{
+            font-size:1.6rem;
+            line-height:1.7;
+            margin-bottom:1rem;
+        }
+
+        /* Buttons */
+        .button-group{
+            margin-top:3rem;
+            display:flex;
+            justify-content:center;
+            gap:1.5rem;
+            flex-wrap:wrap;
+        }
+
+        .btn{
+            padding:0.8rem 2rem;
+            border-radius:30px;
+            text-decoration:none;
+            font-size:1.2rem;
+            font-weight:600;
+            border:2px solid #22c55e;
+            color:#22c55e;
+            transition:0.3s ease;
+        }
+
+        .btn:hover{
+            background:#22c55e;
+            color:white;
+            transform:translateY(-3px);
+        }
+
+        .btn-primary{
+            background:#22c55e;
+            color:white;
+        }
+
+        .btn-primary:hover{
+            background:#15803d;
+            border-color:#15803d;
+        }
+
+        @media(max-width:768px){
+            h1{font-size:3rem;}
+            h2{font-size:1.9rem;}
+            p{font-size:1.3rem;}
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+<div class="overlay"></div>
+
+<div class="page">
+
+    <h1>About</h1>
+
+    <p>
+        I created this project for my <b>2nd Year 1st Semester Software Engineering</b> module.
+        It is a <b>web-based online catering services system</b>, and my responsibility is the
+        <b>Event Management</b> component.
+    </p>
+
+    <p>
+        This system is developed using <b>Java Spring Boot</b> for backend functionality and
+        <b>HTML, CSS, and JavaScript</b> for the frontend interface.
+    </p>
+
+    <h2>Project Overview</h2>
+
+    <h3>Event Creation & Management</h3>
+    <p>
+        The system allows users to create, update, and manage catering events efficiently.
+        All event details including date, location, event type, and customer requirements
+        are handled in an organized way.
+    </p>
+
+    <h3>Status Tracking</h3>
+    <p>
+        Events can be tracked based on their status such as planned, confirmed,
+        completed, or canceled, improving workflow and management visibility.
+    </p>
+
+    <h3>Technology Stack</h3>
+    <p>
+        Spring Boot handles backend logic and data operations, while the frontend
+        provides a clean, responsive, and user-friendly design.
+    </p>
+
+    <h3>Goal & Experience</h3>
+    <p>
+        The goal is to build a professional-looking system that simplifies event planning
+        and improves catering management efficiency.
+    </p>
+
+    <!-- Buttons -->
+    <div class="button-group">
+        <a href="/" class="btn">← Back Home</a>
+        <a href="/login" class="btn btn-primary">Get Started</a>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Registration - Golden Dish Caterings</title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+
+  <!-- Theme CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Compatibility for JS */
+    .hidden {
+      display: none !important;
+    }
+
+    .text-green-600 {
+      color: #16a34a !important;
+    }
+
+    .login-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 20px 60px;
+      /* Accounts for fixed header */
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+        url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1470&q=80') center/cover no-repeat;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 550px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .login-header h2 {
+      color: var(--secondary);
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-header p {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid #ced4da;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 10px;
+      font-size: 0.95rem;
+      border-radius: 50px;
+      margin-top: 1rem;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-login:hover {
+      background-color: var(--secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      color: white;
+    }
+
+    .error-message {
+      background: #ffebee;
+      border: 1px solid #ffcdd2;
+      color: #c62828;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    /* Prevent global header from overlapping */
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      color: var(--gray);
+      padding-top: 1.5rem;
+      border-top: 1px solid #eee;
+    }
+
+    .register-link a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .register-link a:hover {
+      color: var(--secondary);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Global Header -->
+  <header>
+    <div class="container header-content">
+      <a href="/" class="logo" style="text-decoration: none;">
+        <img src="/images/logo.png" alt="Logo">
+        <span class="logo-text">Golden Dish Caterings</span>
+      </a>
+      <div class="nav-container">
+        <nav>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/customer/menu">Menu</a></li>
+            <li><a href="/customer/services">Services</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="login-wrapper">
+      <div class="login-card">
+        <div class="login-header">
+          <h2><i class="fas fa-user-plus me-2"></i>Create Account</h2>
+          <p>Join us to access the event management system</p>
+        </div>
+
+        <form id="register-form" autocomplete="off">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="firstName" class="form-label">
+                <i class="fas fa-user text-success me-2"></i> First Name
+              </label>
+              <input id="firstName" type="text" class="form-control" required placeholder="Enter first name" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="lastName" class="form-label">
+                <i class="fas fa-user text-success me-2"></i> Last Name
+              </label>
+              <input id="lastName" type="text" class="form-control" required placeholder="Enter last name" />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">
+              <i class="fas fa-envelope text-success me-2"></i> Email Address
+            </label>
+            <input id="email" type="email" class="form-control" required placeholder="Enter your email" />
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">
+              <i class="fas fa-lock text-success me-2"></i> Password
+            </label>
+            <input id="password" type="password" class="form-control" required
+              placeholder="Create a password (min 6 chars)" />
+          </div>
+
+          <div class="mb-4">
+            <label for="confirmPassword" class="form-label">
+              <i class="fas fa-lock text-success me-2"></i> Confirm Password
+            </label>
+            <input id="confirmPassword" type="password" class="form-control" required
+              placeholder="Confirm your password" />
+          </div>
+
+          <button id="register-btn" type="button" class="btn-login">
+            <i class="fas fa-user-plus me-2"></i> Create Account
+          </button>
+        </form>
+
+        <div id="info" class="hidden text-center mt-3" style="font-weight: 500;"></div>
+
+        <div id="fail-box" class="error-message hidden">
+          <strong><i class="fas fa-exclamation-circle me-1"></i> Registration failed.</strong>
+          <p id="fail-text" class="mb-3 mt-1 text-danger">Please check your information and try again.</p>
+          <div class="text-center">
+            <button id="try-again" class="btn btn-outline-danger btn-sm px-4 rounded-pill">
+              <i class="fas fa-redo me-1"></i> Try Again
+            </button>
+          </div>
+        </div>
+
+        <div class="register-link">
+          Already have an account? <a href="/login"><i class="fas fa-sign-in-alt me-1"></i> Login here</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <script defer src="/js/register.js"></script>
+</body>
+
+</html>

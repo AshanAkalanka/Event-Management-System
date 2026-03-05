@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Events - Golden Dish Caterings</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .events-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)),
+                url('https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+            color: white;
+            height: 45vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .events-hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .events-hero p {
+            font-size: 1.15rem;
+            opacity: 0.9;
+        }
+
+        .events-section {
+            padding: 4rem 0;
+            background: #f4f6fb;
+            min-height: 60vh;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .event-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 10px 28px -8px rgba(0, 20, 40, 0.12);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 22px 40px -10px rgba(0, 30, 60, 0.2);
+        }
+
+        .event-card-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .event-card-body {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 0.5rem;
+        }
+
+        .event-card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #1e2b3c;
+            margin: 0;
+            font-family: serif;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            margin: 0.5rem 0;
+        }
+
+        .event-meta span {
+            font-size: 0.9rem;
+            color: #4a5a6e;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-meta i {
+            color: #0fa368;
+            width: 16px;
+        }
+
+        .event-status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            background: rgba(15, 163, 104, 0.1);
+            color: #0fa368;
+            border: 1px solid rgba(15, 163, 104, 0.35);
+            align-self: flex-start;
+        }
+
+        .event-status-badge.new {
+            background: rgba(34, 197, 94, 0.12);
+            color: #15803d;
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .event-status-badge.completed {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border-color: rgba(100, 116, 139, 0.25);
+        }
+
+        .event-description {
+            font-size: 0.92rem;
+            color: #6b7a8d;
+            line-height: 1.6;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .register-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            margin-top: 1rem;
+            padding: 0.5rem 1.25rem;
+            background: #0fa368;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: transform 0.2s ease, background 0.2s ease;
+            align-self: flex-start;
+        }
+
+        .register-btn:hover {
+            background: #0d8f5b;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .my-regs-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1.25rem;
+            background: #eef2f6;
+            color: #0fa368;
+            border: 1px solid #c7d2de;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .my-regs-btn:hover {
+            background: #0fa368;
+            color: white;
+            border-color: #0fa368;
+            transform: translateY(-2px);
+        }
+
+        .no-events-msg {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: #8899aa;
+        }
+
+        .no-events-msg i {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.4;
+        }
+
+        .section-heading {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e2b3c;
+            margin-bottom: 0.4rem;
+        }
+
+        .section-sub {
+            color: #6b7a8d;
+            margin-bottom: 2.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/customer/home">Home</a></li>
+                        <li><a href="/customer/menu">Menu</a></li>
+                        <li><a href="/customer/services">Services</a></li>
+                        <li><a href="/customer/book-event">Book Event</a></li>
+                        <li><a href="/customer/chat">Chat</a></li>
+                        <li><a href="/customer/profile" class="user-email"><span class="active-dot"></span><span
+                                    th:text="${userEmail}">User</span></a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="events-hero">
+        <div class="container">
+            <h1><i class="fas fa-calendar-star me-2"></i> Our Events</h1>
+            <p class="mt-2">Explore all upcoming events and register your spot today</p>
+        </div>
+    </section>
+
+    <!-- Events Grid -->
+    <section class="events-section">
+        <div class="container">
+            <div class="mb-5 text-center">
+                <h2 class="section-heading">All Events</h2>
+                <p class="section-sub mb-3">Browse through events organized by Golden Dish Caterings</p>
+                <a href="/customer/event-registrations" class="my-regs-btn">
+                    <i class="fas fa-clipboard-list"></i> My Registrations
+                </a>
+            </div>
+
+            <!-- Events exist -->
+            <div class="events-grid" th:if="${events != null and !events.empty}">
+                <div class="event-card" th:each="event : ${events}">
+                    <!-- Photo or icon banner -->
+                    <img th:if="${event.imageUrl != null}" th:src="${event.imageUrl}" alt="Event photo"
+                        style="width:100%; height:180px; object-fit:cover; display:block;">
+                    <div th:if="${event.imageUrl == null}" class="event-card-image">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+
+                    <div class="event-card-body">
+                        <!-- Title -->
+                        <h3 class="event-card-title" th:text="${event.name != null ? event.name : 'Unnamed Event'}">
+                            Event Name</h3>
+
+                        <!-- Status Badge -->
+                        <span class="event-status-badge"
+                            th:classappend="${event.status != null ? event.status.toLowerCase() : ''}"
+                            th:text="${event.status != null ? event.status : 'Planned'}">Status</span>
+
+                        <!-- Meta Info -->
+                        <div class="event-meta">
+                            <span th:if="${event.venue != null}">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span th:text="${event.venue}">Venue</span>
+                            </span>
+                            <span th:if="${event.guestCount > 0}">
+                                <i class="fas fa-users"></i>
+                                <span th:text="${event.guestCount + ' guests'}">Guests</span>
+                            </span>
+                            <span th:if="${event.dateTime != null}">
+                                <i class="fas fa-clock"></i>
+                                <span th:text="${#temporals.format(event.dateTime, 'MMM dd, yyyy HH:mm')}">Date</span>
+                            </span>
+                        </div>
+
+                        <!-- Description -->
+                        <p class="event-description"
+                            th:if="${event.description != null and !event.description.isEmpty()}"
+                            th:text="${event.description}">Event description goes here.</p>
+
+                        <!-- Register Button -->
+                        <a th:href="@{/customer/event-register/{id}(id=${event.id})}" class="register-btn">
+                            <i class="fas fa-pen-to-square"></i> Register
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No events -->
+            <div class="no-events-msg" th:if="${events == null or events.empty}">
+                <i class="fas fa-calendar-xmark d-block"></i>
+                <h4>No Events Available</h4>
+                <p>Check back soon — exciting events are being planned!</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column footer-about">
+                    <h5>About Us</h5>
+                    <p>Golden Dish Caterers is a premium catering service specializing in weddings, corporate events,
+                        and private parties.</p>
+                </div>
+                <div class="footer-column">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="/customer/home"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="/customer/menu"><i class="fas fa-utensils"></i> Menu</a></li>
+                        <li><a href="/customer/events"><i class="fas fa-calendar-alt"></i> Our Events</a></li>
+                        <li><a href="/customer/book-event"><i class="fas fa-calendar-plus"></i> Book Event</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column footer-contact">
+                    <h5>Contact Us</h5>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Main Street, Colombo, Sri Lanka</p>
+                    <p><i class="fas fa-phone"></i> +94 11 234 5678</p>
+                    <p><i class="fas fa-envelope"></i> info@goldendish.lk</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Golden Dish Caterers | Serving Sri Lanka</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = '/login';
+            }
+
+            document.querySelectorAll('.logout-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    sessionStorage.clear();
+                    window.location.href = '/logout';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

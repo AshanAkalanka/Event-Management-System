@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings - Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/admin/bookings">Bookings</a></li>
+                        <li><a href="#" class="user-email"><span class="active-dot"></span><span
+                                    th:text="${userEmail}">Admin</span></a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-5" style="margin-top: 80px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="mb-0">Booking Requests</h1>
+            <a href="/dashboard" class="action-btn btn-outline rounded-pill"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+
+        <div class="modern-grid" th:if="${bookings != null and !bookings.empty}">
+            <div class="modern-card hover-lift" th:each="booking : ${bookings}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-1 fw-bold">
+                                <span th:text="${booking.event != null ? booking.event.name : 'Event'}">Event</span>
+                            </h5>
+                        </div>
+                        <span class="modern-badge"
+                            th:classappend="${booking.status != null ? booking.status.toLowerCase() : 'bg-warning'}"
+                            th:text="${booking.status != null ? booking.status : 'PENDING'}">PENDING</span>
+                    </div>
+
+                    <div class="text-muted mb-3" style="font-size: 0.95rem;">
+                        <div class="mb-1"><i class="fas fa-user text-secondary me-2"></i> <span
+                                th:text="${booking.user != null ? booking.user.email : 'N/A'}">user@email</span></div>
+                        <div class="mb-1"><i class="fas fa-door-open text-secondary me-2"></i> <span
+                                th:text="${booking.venueType != null ? booking.venueType : 'N/A'}">Venue Type</span>
+                        </div>
+                        <div class="mb-1"><i class="fas fa-tag text-secondary me-2"></i> <span
+                                th:text="${booking.bookingType != null ? booking.bookingType : 'N/A'}">WEDDING</span>
+                        </div>
+                        <div class="mb-1"><i class="fas fa-calendar text-secondary me-2"></i> <span
+                                th:text="${booking.eventDate != null ? #temporals.format(booking.eventDate, 'yyyy-MM-dd HH:mm') : 'N/A'}">date</span>
+                        </div>
+                        <div class="mb-1"><i class="fas fa-map-marker-alt text-secondary me-2"></i> <span
+                                th:text="${booking.venue != null ? booking.venue : 'N/A'}">venue</span></div>
+                        <div class="mb-1"><i class="fas fa-users text-secondary me-2"></i> <span
+                                th:text="${booking.guestCount}">0</span> guests</div>
+                        <div class="mb-1 mt-2 p-2 bg-light rounded"><i class="fas fa-dollar-sign text-success me-1"></i>
+                            <strong style="color: var(--secondary); font-size: 1.1rem;">Rs. <span
+                                    th:text="${booking.totalPrice != null ? #numbers.formatDecimal(booking.totalPrice, 1, 2) : '0.00'}">0.00</span></strong>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label class="form-label fw-bold text-muted" style="font-size: 0.9rem;">Admin Note
+                            (optional)</label>
+                        <textarea class="form-control styled-input" rows="2" th:attr="data-admin-note-id=${booking.id}"
+                            placeholder="Add a short note or decline reason..."
+                            style="font-size: 0.9rem; border-radius: 12px;"></textarea>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button class="action-btn rounded-pill flex-fill justify-content-center"
+                            style="background-color: #10b981; color: white; border-color: #10b981;"
+                            th:if="${booking.status == 'PENDING'}" th:attr="data-approve-id=${booking.id}"
+                            onclick="approveBooking(this)">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                        <button class="action-btn rounded-pill flex-fill justify-content-center"
+                            style="background-color: #ef4444; color: white; border-color: #ef4444;"
+                            th:if="${booking.status == 'PENDING'}" th:attr="data-decline-id=${booking.id}"
+                            onclick="declineBooking(this)">
+                            <i class="fas fa-times"></i> Decline
+                        </button>
+                        <span class="modern-badge rounded-pill bg-secondary w-100 text-center py-2"
+                            th:if="${booking.status != 'PENDING'}"><i class="fas fa-check-circle me-1"></i>
+                            Reviewed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${bookings == null or bookings.empty}" class="text-center py-5">
+            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No bookings found.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/admin/bookings.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = '/login';
+            }
+        });
+
+        // Handle logout
+        document.querySelectorAll('.logout-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                sessionStorage.clear();
+                window.location.href = '/logout';
+            });
+        });
+    </script>
+</body>
+
+</html>

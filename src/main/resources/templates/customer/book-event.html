@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Event - Golden Dish Caterings</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .booking-form-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-category-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            padding: 0.25rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(5, 150, 105, 0.2);
+            border-radius: 15px;
+            background: #f8f9fa;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-tab:hover,
+        .category-tab.active {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
+        }
+
+        .menu-item-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .price-summary {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/customer/home">Home</a></li>
+                        <li><a href="/customer/menu">Menu</a></li>
+                        <li><a href="/customer/services">Services</a></li>
+                        <li><a href="/customer/book-event">Book Event</a></li>
+                        <li><a href="/customer/chat">Chat</a></li>
+                        <li><a href="/customer/profile" class="user-email"><span class="active-dot"></span><span
+                                    th:text="${userEmail}">User</span></a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-5" style="margin-top: 80px;">
+        <h1 class="text-center mb-4">Book Your Event</h1>
+
+        <form id="booking-form" class="booking-form-section">
+            <h3><i class="fas fa-calendar"></i> Event Details</h3>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Venue Type</label>
+                    <select class="form-control" id="venueType" required>
+                        <option value="">Choose Venue Type</option>
+                        <option value="INDOOR">Indoor</option>
+                        <option value="OUTDOOR">Outdoor</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Select Event Type</label>
+                    <select class="form-control" id="bookingType" required>
+                        <option value="">Choose Event Type</option>
+                        <option value="WEDDING">Wedding</option>
+                        <option value="BIRTHDAY">Birthday</option>
+                        <option value="ENGAGEMENT">Engagement</option>
+                        <option value="ANNIVERSARY">Anniversary</option>
+                        <option value="CORPORATE">Corporate</option>
+                        <option value="PARTY">Party</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Event Name</label>
+                    <input type="text" class="form-control" id="eventName" placeholder="Enter event name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Number of Guests</label>
+                    <input type="number" class="form-control" id="guestCount" min="1" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Event Date & Time</label>
+                    <input type="datetime-local" class="form-control" id="eventDate" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Venue</label>
+                    <input type="text" class="form-control" id="venue" required>
+                </div>
+                <div class="col-12 mb-3">
+                    <label>Special Requests</label>
+                    <textarea class="form-control" id="specialRequests" rows="3"></textarea>
+                </div>
+            </div>
+
+            <h3 class="mt-5"><i class="fas fa-utensils"></i> Select Menu Items</h3>
+            <div class="menu-category-tabs">
+                <div class="category-tab active" data-category="ALL" onclick="filterMenu('ALL')">All</div>
+                <div class="category-tab" th:each="cat : ${categories}" th:data-category="${cat}"
+                    onclick="filterMenu(this)" th:text="${cat}">
+                    Category
+                </div>
+            </div>
+            <div class="menu-grid" id="menu-grid" th:if="${menus != null and !menus.empty}">
+                <div class="menu-item-card" th:each="menu : ${menus}" th:data-category="${menu.category}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 th:text="${menu.name != null ? menu.name : 'Menu Item'}">Menu Item</h5>
+                            <p class="text-muted mb-1"
+                                th:text="${menu.description != null ? menu.description : 'No description'}">Description
+                            </p>
+                            <p class="mb-0"><strong>Rs. <span
+                                        th:text="${menu.price != null ? #numbers.formatDecimal(menu.price, 1, 2) : '0.00'}">0.00</span></strong>
+                                <small th:text="${menu.unit != null ? menu.unit : 'per person'}">per person</small>
+                            </p>
+                        </div>
+                        <div>
+                            <input type="number" class="form-control" th:data-menu-id="${menu.id}"
+                                th:data-menu-price="${menu.price != null ? menu.price : 0}" min="0" value="0"
+                                style="width: 80px;" onchange="calculateTotal()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${menus == null or menus.empty}" class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No menu items available at the moment.
+            </div>
+
+            <h3 class="mt-5"><i class="fas fa-concierge-bell"></i> Select Services</h3>
+            <div class="menu-grid" th:if="${services != null and !services.empty}">
+                <div class="menu-item-card" th:each="service : ${services}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 th:text="${service.name != null ? service.name : 'Service'}">Service</h5>
+                            <p class="text-muted mb-1"
+                                th:text="${service.description != null ? service.description : 'No description'}">
+                                Description</p>
+                            <p class="mb-0"><strong>Rs. <span
+                                        th:text="${service.price != null ? #numbers.formatDecimal(service.price, 1, 2) : '0.00'}">0.00</span></strong>
+                                <small th:text="${service.unit != null ? service.unit : 'per event'}">per event</small>
+                            </p>
+                        </div>
+                        <div>
+                            <input type="number" class="form-control" th:data-service-id="${service.id}"
+                                th:data-service-price="${service.price != null ? service.price : 0}" min="0" value="0"
+                                style="width: 80px;" onchange="calculateTotal()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${services == null or services.empty}" class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No services available at the moment.
+            </div>
+
+            <div class="price-summary">
+                <h4>Price Summary</h4>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Meal Price:</span>
+                    <strong id="meal-total">Rs. 0.00</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Service Price:</span>
+                    <strong id="service-total">Rs. 0.00</strong>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <h4>Total Price:</h4>
+                    <h4 id="total-price">Rs. 0.00</h4>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="action-btn btn-primary rounded-pill px-5">
+                    <i class="fas fa-check"></i> Confirm Booking
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/customer/booking.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = '/login';
+            }
+
+            // Handle logout
+            document.querySelectorAll('.logout-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    sessionStorage.clear();
+                    window.location.href = '/logout';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

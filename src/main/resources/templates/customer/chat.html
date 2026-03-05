@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Golden Dish Caterings</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* Modern chat styles are now globally defined in styles.css */
+    </style>
+</head>
+<body>
+<header>
+    <div class="container header-content">
+        <div class="logo">
+            <img src="/images/logo.png" alt="Logo">
+            <span class="logo-text">Golden Dish Caterings</span>
+        </div>
+        <div class="nav-container">
+            <nav>
+                <ul>
+                    <li><a href="/customer/home">Home</a></li>
+                    <li><a href="/customer/menu">Menu</a></li>
+                    <li><a href="/customer/services">Services</a></li>
+                    <li><a href="/customer/book-event">Book Event</a></li>
+                    <li><a href="/customer/chat">Chat</a></li>
+                    <li><a href="/customer/profile" class="user-email"><span class="active-dot"></span><span th:text="${userEmail}">User</span></a></li>
+                    <li><a href="/logout" class="logout-btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="container py-5" style="margin-top: 80px; max-width: 900px;">
+    <div class="chat-container-wrapper">
+        <div class="chat-header">
+            <h4><i class="fas fa-headset me-2"></i> Support Chat</h4>
+            <div class="chat-status">
+                <span class="status-dot"></span> Online
+            </div>
+        </div>
+
+        <div id="chatBox" class="chat-box"></div>
+
+        <div class="chat-input-area">
+            <form id="chatForm">
+                <input id="chatMessage" class="chat-input" type="text" placeholder="Type your message..." autocomplete="off" />
+                <button class="chat-send-btn" type="submit" title="Send message"><i class="fas fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/customer/chat.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        if (isLoggedIn !== 'true') {
+            window.location.href = '/login';
+        }
+    });
+
+    document.querySelectorAll('.logout-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            sessionStorage.clear();
+            window.location.href = '/logout';
+        });
+    });
+</script>
+</body>
+</html>

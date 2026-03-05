@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registrations - Admin | Golden Dish Caterings</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .admin-reg-page {
+            min-height: 100vh;
+            background: #f4f6fb;
+            padding-top: 100px;
+            padding-bottom: 4rem;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #1e2b3c;
+            margin: 0;
+        }
+
+        .page-sub {
+            color: #6b7a8d;
+            margin: 0.3rem 0 0;
+        }
+
+        .reg-table-wrap {
+            background: white;
+            border-radius: 1.2rem;
+            box-shadow: 0 8px 24px -8px rgba(0, 20, 40, 0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #1e2b3c, #2d3f56);
+            color: white;
+        }
+
+        thead th {
+            padding: 1rem 1.2rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f4f8;
+            transition: background 0.15s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        td {
+            padding: 1rem 1.2rem;
+            font-size: 0.95rem;
+            color: #1e2b3c;
+            vertical-align: middle;
+        }
+
+        .event-name-cell {
+            font-weight: 600;
+        }
+
+        .contact-cell {
+            color: #4a5a6e;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            border-radius: 999px;
+            padding: 0.3rem 0.85rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .status-pill.pending {
+            background: rgba(245, 158, 11, 0.12);
+            color: #92400e;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-pill.approved {
+            background: rgba(16, 185, 129, 0.12);
+            color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .status-pill.cancelled {
+            background: rgba(225, 29, 72, 0.08);
+            color: #be123c;
+            border: 1px solid rgba(225, 29, 72, 0.3);
+        }
+
+        .approve-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 1.1rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-size: 0.83rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .approve-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+            color: white;
+        }
+
+        .approved-text {
+            color: #059669;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .pending-count-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(245, 158, 11, 0.15);
+            color: #92400e;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 999px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #8899aa;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.35;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/dashboard">Home</a></li>
+                        <li><a href="/admin/bookings">Bookings</a></li>
+                        <li><a href="/admin/event-registrations" class="active">Event Registrations</a></li>
+                        <li><a href="/admin/menus">Meals</a></li>
+                        <li><a href="/admin/services">Services</a></li>
+                        <li><a href="/admin/chat">Chat</a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-reg-page">
+        <div class="container">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title"><i class="fas fa-clipboard-list me-2" style="color:#10b981;"></i>Event
+                        Registrations</h2>
+                    <p class="page-sub">Review and approve customer event registration requests.</p>
+                </div>
+                <!-- Pending count -->
+                <div th:if="${registrations != null}">
+                    <span class="pending-count-badge">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span th:text="${#lists.size(registrations.?[status == 'PENDING'])} + ' Pending'">0
+                            Pending</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="reg-table-wrap" th:if="${registrations != null and !registrations.empty}">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Event</th>
+                            <th>Customer Name</th>
+                            <th>Contact Number</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="reg, iter : ${registrations}">
+                            <td th:text="${iter.count}">1</td>
+                            <td class="event-name-cell" th:text="${reg.event != null ? reg.event.name : 'N/A'}">Event
+                            </td>
+                            <td th:text="${reg.name}">Name</td>
+                            <td class="contact-cell" th:text="${reg.contactNumber}">Contact</td>
+                            <td>
+                                <span class="status-pill approved" th:if="${reg.status == 'APPROVED'}">
+                                    <i class="fas fa-circle-check"></i> Approved
+                                </span>
+                                <span class="status-pill cancelled" th:if="${reg.status == 'CANCELLED'}">
+                                    <i class="fas fa-ban"></i> Cancelled
+                                </span>
+                                <span class="status-pill pending"
+                                    th:if="${reg.status != 'APPROVED' and reg.status != 'CANCELLED'}">
+                                    <i class="fas fa-hourglass-half"></i> Pending
+                                </span>
+                            </td>
+                            <td>
+                                <!-- Approve button only for PENDING -->
+                                <form th:if="${reg.status != 'APPROVED' and reg.status != 'CANCELLED'}"
+                                    th:action="@{/admin/event-registrations/approve/{id}(id=${reg.id})}" method="post"
+                                    style="display:inline;">
+                                    <button type="submit" class="approve-btn">
+                                        <i class="fas fa-circle-check"></i> Approve
+                                    </button>
+                                </form>
+                                <!-- Already approved -->
+                                <span th:if="${reg.status == 'APPROVED'}" class="approved-text">
+                                    <i class="fas fa-check-circle"></i> Done
+                                </span>
+                                <!-- Cancelled by customer -->
+                                <span th:if="${reg.status == 'CANCELLED'}"
+                                    style="color:#be123c; font-size:0.85rem; font-weight:600; display:flex; align-items:center; gap:0.35rem;">
+                                    <i class="fas fa-ban"></i> Cancelled
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty state -->
+            <div class="empty-state" th:if="${registrations == null or registrations.empty}">
+                <i class="fas fa-inbox"></i>
+                <h4>No Registrations Yet</h4>
+                <p>Customer event registrations will appear here once submitted.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.logout-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    sessionStorage.clear();
+                    window.location.href = '/logout';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

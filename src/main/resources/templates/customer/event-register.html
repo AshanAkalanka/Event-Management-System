@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register for Event - Golden Dish Caterings</title>
+    <link rel="icon" type="image/png" th:href="@{/images/logo.png}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .register-page {
+            min-height: 100vh;
+            background: #f4f6fb;
+            padding-top: 100px;
+            padding-bottom: 4rem;
+        }
+
+        .register-card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 16px 40px -10px rgba(0, 30, 60, 0.14);
+            overflow: hidden;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        .register-card-header {
+            background: #0fa368;
+            padding: 1.5rem 2rem 1.25rem;
+            color: white;
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem;
+        }
+
+        .register-card-header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0 0 0.4rem;
+            font-family: serif;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .register-card-header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .event-info-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 999px;
+            padding: 0.25rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.8rem;
+        }
+
+        .register-card-body {
+            padding: 1.8rem 2rem;
+        }
+
+        .form-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #1e3b30;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-control:focus {
+            border-color: #0fa368;
+            box-shadow: 0 0 0 3px rgba(15, 163, 104, 0.15);
+            outline: none;
+        }
+
+        .status-pending-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #fdf5e6;
+            color: #b45309;
+            border: 1px solid #fce3b8;
+            border-radius: 999px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            background: #0fa368;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            box-shadow: 0 4px 14px rgba(15, 163, 104, 0.3);
+            text-decoration: none;
+            margin-top: 1.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(15, 163, 104, 0.4);
+            background: #0d8f5b;
+            color: white;
+        }
+
+        .cancel-link {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #6b7a8d;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .cancel-link:hover {
+            color: #0fa368;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/customer/home">Home</a></li>
+                        <li><a href="/customer/menu">Menu</a></li>
+                        <li><a href="/customer/services">Services</a></li>
+                        <li><a href="/customer/book-event">Book Event</a></li>
+                        <li><a href="/customer/chat">Chat</a></li>
+                        <li><a href="/customer/profile" class="user-email">
+                                <span class="active-dot"></span>
+                                <span th:text="${userEmail}">User</span>
+                            </a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="register-page">
+        <div class="container">
+            <div class="register-card">
+                <!-- Header -->
+                <div class="register-card-header">
+                    <p>Fill in your details to register. Your spot will be confirmed upon admin approval.</p>
+                    <div class="event-info-pill">
+                        <i class="fas fa-tag"></i>
+                        <span th:text="${event.name}">Event Name</span>
+                    </div>
+                </div>
+
+                <!-- Form Body -->
+                <div class="register-card-body">
+
+                    <!-- Already Registered State -->
+                    <div th:if="${alreadyRegistered}" class="text-center py-4">
+                        <div style="font-size: 3rem; color: #0fa368; margin-bottom: 0rem;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <p class="text-muted mb-4" style="font-size:0.95rem;">
+                            You have already successfully submitted your registration for this event.
+                        </p>
+                        <div class="text-center">
+                            <a href="/customer/event-registrations"
+                                style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.4rem; background: #0fa368; color: white; border-radius: 999px; font-weight: 700; font-size: 0.8rem; text-decoration: none; transition: background 0.2s;"
+                                onmouseover="this.style.background='#0d8f5b'"
+                                onmouseout="this.style.background='#0fa368'">
+                                <i class="fas fa-clipboard-list"></i> View My Registrations
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Registration Form State -->
+                    <div th:if="${!alreadyRegistered}">
+                        <!-- Status badge -->
+                        <div class="mb-4">
+                            <span class="status-pending-badge">
+                                <i class="fas fa-hourglass-half"></i> PENDING APPROVAL
+                            </span>
+                            <p class="text-muted mt-3 mb-0" style="font-size:0.85rem;">
+                                Your registration will be reviewed by our admin team.
+                            </p>
+                        </div>
+
+                        <form th:action="@{/customer/event-register/{id}(id=${event.id})}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label" for="name">
+                                    <i class="fas fa-user me-1" style="color:#0fa368;"></i> Full Name
+                                </label>
+                                <input type="text" id="name" name="name" class="form-control"
+                                    placeholder="Enter your full name" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="contactNumber">
+                                    <i class="fas fa-phone me-1" style="color:#0fa368;"></i> Contact Number
+                                </label>
+                                <input type="tel" id="contactNumber" name="contactNumber" class="form-control"
+                                    placeholder="e.g. +94 77 123 4567" required>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="submit-btn mt-4">
+                                    <i class="fas fa-paper-plane"></i> Submit Registration
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <a href="/customer/events" class="cancel-link">
+                        <i class="fas fa-arrow-left me-1"></i> Back to Events
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') window.location.href = '/login';
+            document.querySelectorAll('.logout-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    sessionStorage.clear();
+                    window.location.href = '/logout';
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

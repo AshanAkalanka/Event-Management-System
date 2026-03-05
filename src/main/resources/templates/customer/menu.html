@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - Golden Dish Caterings</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <img src="/images/logo.png" alt="Logo">
+                <span class="logo-text">Golden Dish Caterings</span>
+            </div>
+            <div class="nav-container">
+                <nav>
+                    <ul>
+                        <li><a href="/customer/home">Home</a></li>
+                        <li><a href="/customer/menu">Menu</a></li>
+                        <li><a href="/customer/services">Services</a></li>
+                        <li><a href="/customer/book-event">Book Event</a></li>
+                        <li><a href="/customer/chat">Chat</a></li>
+                        <li><a href="/customer/profile" class="user-email"><span class="active-dot"></span><span
+                                    th:text="${userEmail}">User</span></a></li>
+                        <li><a href="/logout" class="logout-btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-5" style="margin-top: 80px;">
+        <h1 class="text-center mb-4">Our Menu</h1>
+
+        <div class="modern-menu-tabs">
+            <a href="/customer/menu" class="modern-menu-tab"
+                th:classappend="${selectedCategory == null} ? 'active' : ''">All</a>
+            <a th:each="cat : ${categories}" th:href="@{/customer/menu(category=${cat})}" class="modern-menu-tab"
+                th:classappend="${selectedCategory == cat} ? 'active' : ''" th:text="${cat}">Category</a>
+        </div>
+
+        <div class="modern-grid" th:if="${menus != null and !menus.empty}">
+            <div class="modern-card hover-lift" th:each="menu : ${menus}">
+                <img th:src="${menu.imageUrl != null and !menu.imageUrl.isEmpty() ? menu.imageUrl : '/images/homepage_image.jpg'}"
+                    alt="Menu Item" style="width: 100%; height: 200px; object-fit: cover;">
+                <div class="card-body d-flex flex-column p-4">
+                    <h4 class="fw-bold" th:text="${menu.name != null ? menu.name : 'Menu Item'}">Menu Item</h4>
+                    <p class="text-muted flex-grow-1"
+                        th:text="${menu.description != null ? menu.description : 'No description available'}">
+                        Description</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="modern-badge bg-primary"
+                            th:text="${menu.category != null ? menu.category : 'N/A'}">Category</span>
+                        <h5 class="mb-0 fw-bold" style="color: var(--secondary);">Rs. <span
+                                th:text="${menu.price != null ? #numbers.formatDecimal(menu.price, 1, 2) : '0.00'}">0.00</span>
+                        </h5>
+                    </div>
+                    <small class="text-muted mt-2" th:text="${menu.unit != null ? menu.unit : 'per person'}">per
+                        person</small>
+                </div>
+            </div>
+        </div>
+        <div th:if="${menus == null or menus.empty}" class="text-center py-5">
+            <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No menu items available at the moment.</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+            if (isLoggedIn !== 'true') {
+                window.location.href = '/login';
+            }
+        });
+
+        // Handle logout
+        document.querySelectorAll('.logout-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                sessionStorage.clear();
+                window.location.href = '/logout';
+            });
+        });
+    </script>
+</body>
+
+</html>

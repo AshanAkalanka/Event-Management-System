@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details - Golden Dish Caterings</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <div class="container header-content">
+        <div class="logo">
+            <img src="/images/logo.png" alt="Logo">
+            <span class="logo-text">Golden Dish Caterings</span>
+        </div>
+        <div class="nav-container">
+            <nav>
+                <ul>
+                    <li><a href="/customer/home">Home</a></li>
+                    <li><a href="/customer/bookings">My Bookings</a></li>
+                    <li><a href="/customer/chat">Chat</a></li>
+                    <li><a href="/customer/profile" class="user-email"><span class="active-dot"></span><span th:text="${userEmail}">User</span></a></li>
+                    <li><a href="/logout" class="logout-btn">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<div class="container py-5" style="margin-top: 80px;">
+    <h1 class="mb-4">Booking Details</h1>
+    
+    <div class="card" th:if="${booking}">
+        <div class="card-body">
+            <h3 th:text="${booking.event != null ? booking.event.name : 'N/A'}">Event Name</h3>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Event Date:</strong> <span th:text="${booking.eventDate != null ? #temporals.format(booking.eventDate, 'yyyy-MM-dd HH:mm') : 'N/A'}">Date</span></p>
+                    <p><strong>Venue:</strong> <span th:text="${booking.venue != null ? booking.venue : 'N/A'}">Venue</span></p>
+                    <p><strong>Venue Type:</strong> <span th:text="${booking.venueType != null ? booking.venueType : 'N/A'}">Venue Type</span></p>
+                    <p><strong>Booking Type:</strong> <span th:text="${booking.bookingType != null ? booking.bookingType : 'N/A'}">Type</span></p>
+                    <p><strong>Guest Count:</strong> <span th:text="${booking.guestCount}">Guests</span></p>
+                    <p><strong>Status:</strong> <span class="status-badge" th:classappend="${booking.status != null ? booking.status.toLowerCase() : 'pending'}" th:text="${booking.status != null ? booking.status : 'PENDING'}">Status</span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Meal Price:</strong> Rs. <span th:text="${booking.mealPrice != null ? #numbers.formatDecimal(booking.mealPrice, 1, 2) : '0.00'}">0.00</span></p>
+                    <p><strong>Service Price:</strong> Rs. <span th:text="${booking.servicePrice != null ? #numbers.formatDecimal(booking.servicePrice, 1, 2) : '0.00'}">0.00</span></p>
+                    <p><strong>Total Price:</strong> Rs. <span th:text="${booking.totalPrice != null ? #numbers.formatDecimal(booking.totalPrice, 1, 2) : '0.00'}">0.00</span></p>
+                </div>
+            </div>
+            <div th:if="${booking.specialRequests}" class="mt-3">
+                <strong>Special Requests:</strong>
+                <p th:text="${booking.specialRequests}">Requests</p>
+            </div>
+            <div th:if="${booking.adminNote}" class="mt-3">
+                <strong>Admin Note:</strong>
+                <p th:text="${booking.adminNote}">Note</p>
+            </div>
+            <div class="mt-3">
+                <a href="/customer/bookings" class="btn btn-secondary">Back to Bookings</a>
+                <button th:if="${booking.status == 'PENDING'}" th:onclick="'cancelBooking(' + ${booking.id} + ')'" class="btn btn-danger">Cancel Booking</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+        if (isLoggedIn !== 'true') {
+            window.location.href = '/login';
+        }
+    });
+    
+    // Handle logout
+    document.querySelectorAll('.logout-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            sessionStorage.clear();
+            window.location.href = '/logout';
+        });
+    });
+    
+    async function cancelBooking(id) {
+        if (!confirm('Are you sure you want to cancel this booking?')) return;
+        const response = await fetch('/customer/bookings/' + id + '/cancel', { method: 'POST' });
+        const data = await response.json();
+        alert(data.message);
+        if (data.success) window.location.href = '/customer/bookings';
+    }
+</script>
+</body>
+</html>
